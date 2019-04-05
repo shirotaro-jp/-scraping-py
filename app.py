@@ -18,7 +18,7 @@ result = re.split('<|>|\(|\)', top_h1)
 area = result[2].replace('の人気美容院・美容室・ヘアサロン ', '') # エリア名
 page = int(result[3].replace('1/', '')) # ページ数
 
-for i in range(1): # ページネーションをたどる
+for i in range(page): # ページネーションをたどる
     i = str(i+1)
     r_list = requests.get(url + 'PN' + i + '.html') 
     body = r_list.content
@@ -33,13 +33,12 @@ for i in range(1): # ページネーションをたどる
             r_shop = requests.get(href) 
             soup_shop = BeautifulSoup(r_shop.content, 'html.parser')
             shop_adress = soup_shop.find('ul', class_='fs10')
-            shop_adress = str(shop_adress.find('li')) 
-            shop_adress = shop_adress.replace('<li>', '')
-            shop_adress = shop_adress.replace('</li>', '') #サロン住所
+            shop_adress = shop_adress.find('li')
+            shop_adress = shop_adress.get_text() #サロン住所
             shop_link = str(soup_shop.find('div', class_='mT30 mB20'))
             shop_link = shop_link.count('<li>') #関連リンク数
             shop_tel = soup_shop.find('th', class_='w120')
-            shop_tel = str(shop_tel.get_text())
+            shop_tel = shop_tel.get_text()
             if shop_tel in '電話番号':
                 time.sleep(2)
                 tel_url = href + 'tel/'
